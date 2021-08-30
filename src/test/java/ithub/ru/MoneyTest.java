@@ -2,7 +2,10 @@ package ithub.ru;
 
 import org.junit.jupiter.api.Test;
 
+import static ithub.ru.Money.dollar;
+import static ithub.ru.Money.franc;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /*
  * @created 29/08/2021 - 21:18
@@ -12,10 +15,32 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class MoneyTest {
 
  @Test
- void testMultiplication() {
-  Dollar five = new Dollar(5);
-  five.times(2);
-  assertEquals(10, five.amount);
+ void testMultiplicationDollar() {
+  Money five = dollar(5);
+  assertEquals(dollar(10), five.times(2));
+  assertEquals(dollar(15), five.times(3));
  }
 
+
+ @Test
+ void testEqualityDollar() {
+  assertEquals(dollar(5), dollar(5));
+  assertNotEquals(dollar(5), dollar(8));
+ }
+
+
+
+ @Test
+ void testMultiplicationFranc() {
+  Money five = franc(5);
+  assertEquals(franc(10), five.times(2));
+  assertEquals(franc(15), five.times(3));
+ }
+
+
+ @Test
+ void testEqualityFranc() {
+  assertEquals(franc(5), franc(5));
+  assertNotEquals(franc(5), franc(8));
+ }
 }

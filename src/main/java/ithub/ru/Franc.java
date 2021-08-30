@@ -1,18 +1,17 @@
 package ithub.ru;
 
 /*
- * @created 29/08/2021 - 21:24
+ * @created 30/08/2021 - 16:16
  * @project IntelliJ IDEA
  * @author Temnyakov Nikolay
  */
-public class Dollar extends Money {
+public class Franc extends Money {
 
-    public Dollar(int amount) {
+    public Franc(int amount) {
         this.amount = amount;
     }
 
     public Money times(int multiplier) {
-        return new Dollar(this.amount * multiplier);
+        return new Franc(this.amount * multiplier);
     }
-
 }
