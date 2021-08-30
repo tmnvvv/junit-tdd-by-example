@@ -5,7 +5,7 @@ package ithub.ru;
  * @project IntelliJ IDEA
  * @author Temnyakov Nikolay
  */
-public abstract class Money {
+public class Money {
     protected int amount;
     protected String currency;
 
@@ -13,8 +13,6 @@ public abstract class Money {
         this.amount = amount;
         this.currency = currency;
     }
-
-    public abstract Money times(int multiplier);
 
     protected String currency() {
         return currency;
@@ -30,6 +28,18 @@ public abstract class Money {
 
     public boolean equals(Object object) {
         Money money = Money.class.cast(object);
-        return this.amount == money.amount && getClass().equals(object.getClass());
+        return this.amount == money.amount && this.currency == money.currency;
+    }
+
+    @Override
+    public String toString() {
+        return "Money{" +
+                "amount=" + amount +
+                ", currency='" + currency + '\'' +
+                '}';
+    }
+
+    public Money times(int multiplier) {
+        return new Money(this.amount * multiplier, this.currency);
     }
 }
