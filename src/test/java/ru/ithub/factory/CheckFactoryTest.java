@@ -18,21 +18,45 @@ class CheckFactoryTest {
 
     @Test
     void gettingDollarTest() {
-        assertEquals(new Check(10, Currency.USD), checkFactory.dollar(10));
+        assertEquals(
+                Check.newBuilder()
+                    .setAmount(10)
+                    .setCurrency(Currency.USD)
+                    .build(),
+                checkFactory.dollar(10)
+        );
     }
 
     @Test
     void gettingEuroTest() {
-        assertEquals(new Check(10, Currency.EUR), checkFactory.euro(10));
+        assertEquals(
+                Check.newBuilder()
+                        .setAmount(10)
+                        .setCurrency(Currency.EUR)
+                        .build(),
+                checkFactory.euro(10)
+        );
     }
 
     @Test
     void gettingRubbleTest() {
-        assertEquals(new Check(10, Currency.RUB), checkFactory.rubble(10));
+        assertEquals(
+                Check.newBuilder()
+                        .setAmount(10)
+                        .setCurrency(Currency.RUB)
+                        .build(),
+                checkFactory.rubble(10)
+        );
     }
 
     @Test
     void gettingFrancTest() {
-        assertEquals(new Check(10, Currency.CHF), checkFactory.franc(10));
+        assertEquals(
+                Check.newBuilder()
+                        .setAmount(10)
+                        .setCurrency(Currency.CHF)
+                        .build(),
+                checkFactory.franc(10)
+        );
     }
 }

@@ -16,6 +16,10 @@ public class CheckConverterImpl implements CheckConverter {
     @Override
     public Check convert(Check check, Currency currency) {
         if (check.getCurrency() == currency) return check;
-        return new Check(check.getAmount() * fccapiUtil.getCurrencyRateOfPair(CurrencyPair.of(check.getCurrency(), currency)), currency);
+
+        return Check.newBuilder()
+                .setAmount(check.getAmount() * fccapiUtil.getCurrencyRateOfPair(CurrencyPair.of(check.getCurrency(), currency)))
+                .setCurrency(currency)
+                .build();
     }
 }

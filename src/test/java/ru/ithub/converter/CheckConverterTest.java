@@ -23,8 +23,15 @@ class CheckConverterTest {
 
     @Test
     void convertShouldUseFCCAPIUtilAndConvertAmountByRate() {
-        Check check = new Check(10, Currency.USD);
-        Check expected = new Check(700, Currency.RUB);
+        Check check = Check.newBuilder()
+                .setAmount(10)
+                .setCurrency(Currency.USD)
+                .build();
+
+        Check expected = Check.newBuilder()
+                .setAmount(700)
+                .setCurrency(Currency.RUB)
+                .build();
 
         when(fccapiUtil.getCurrencyRateOfPair(eq(CurrencyPair.of(Currency.USD, Currency.RUB)))).thenReturn(70.0);
 

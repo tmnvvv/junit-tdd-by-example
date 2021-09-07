@@ -11,7 +11,10 @@ class CheckTest {
 
     @BeforeEach
     void setUp() {
-        existing = new Check(100, Currency.USD);
+        existing = Check.newBuilder()
+                        .setAmount(100)
+                        .setCurrency(Currency.USD)
+                        .build();
     }
 
     @Test
@@ -26,16 +29,28 @@ class CheckTest {
 
     @Test
     void multiplyTst() {
-        assertEquals(existing.times(5), new Check(500, Currency.USD));
+        assertEquals(existing.times(5), Check.newBuilder()
+                .setAmount(500)
+                .setCurrency(Currency.USD)
+                .build()
+        );
     }
 
     @Test
     void plusTest() {
-        assertEquals(existing.plus(200), new Check(300, Currency.USD));
+        assertEquals(existing.plus(200), Check.newBuilder()
+                .setAmount(300)
+                .setCurrency(Currency.USD)
+                .build()
+        );
     }
 
     @Test
     void minusTest() {
-        assertEquals(existing.minus(40), new Check(60, Currency.USD));
+        assertEquals(existing.minus(40), Check.newBuilder()
+                .setAmount(60)
+                .setCurrency(Currency.USD)
+                .build()
+        );
     }
 }
