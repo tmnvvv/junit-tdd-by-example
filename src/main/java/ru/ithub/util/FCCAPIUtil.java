@@ -15,7 +15,6 @@ import java.time.Duration;
  * Free Currency Converter API
  * https://free.currencyconverterapi.com
  */
-
 @ApiModule(name = "Free Currency Converter API", link = "https://free.currencyconverterapi.com")
 public class FCCAPIUtil {
     private final HttpClient httpClient;

@@ -1,8 +1,10 @@
 package ru.ithub.entity;
 
 import ru.ithub.currency.Currency;
+import ru.ithub.factory.LoggerFactory;
 
 import java.util.Objects;
+import java.util.logging.Level;
 
 public class Check {
     protected double amount;
@@ -37,12 +39,11 @@ public class Check {
 
     @Override
     public String toString() {
-        return "Check{" +
+        return "{" +
                 "amount=" + amount +
                 ", currency='" + currency.name() + '\'' +
                 '}';
     }
-
 
     public Check times(int multiplier) {
         return  Check.newBuilder()
@@ -81,6 +82,8 @@ public class Check {
         }
 
         public Check build() {
+            LoggerFactory.getLogger(this.getClass().getName()).log(Level.INFO, "Check created: " + Check.this);
+
             return Check.this;
         }
     }

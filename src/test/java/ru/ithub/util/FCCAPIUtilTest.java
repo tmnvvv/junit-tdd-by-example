@@ -25,14 +25,13 @@ import static org.mockito.Mockito.when;
 
 class FCCAPIUtilTest {
     private FCCAPIUtil fccapiUtil;
+    private HttpClient httpClient;
 
     @BeforeEach
     void setUp() {
+        this.httpClient = mock(HttpClient.class);
         fccapiUtil = new FCCAPIUtil(
-                HttpClient.newBuilder()
-                    .version(HttpClient.Version.HTTP_1_1)
-                    .connectTimeout(Duration.ofSeconds(10))
-                    .build()
+               httpClient
         );
     }
 
@@ -47,4 +46,17 @@ class FCCAPIUtilTest {
         Double expected = 70.1234;
         assertEquals(expected, fccapiUtil.getCurrencyRateFromJsonString("{\"USD_RUB\":{\"val\":70.1234}}"));
     }
+
+    @Test
+    void getCurrencyRateFromJsonStringShouldThrowApiRequestException() {
+        ErrorHttpResponse response = new ErrorHttpResponse();
+        try {
+            when(httpClient.send(any(), any())).thenReturn(response);
+        } catch (IOException | InterruptedException ignored) { }
+
+        String expectedMessage = "Error: Calling api module { name='Free Currency Converter API', link='https://free.currencyconverterapi.com'}";
+        ApiRequestException actualException = assertThrows(ApiRequestException.class, () -> fccapiUtil.getCurrencyRateOfPair(CurrencyPair.of(Currency.RUB, Currency.USD)));
+        assertEquals(expectedMessage, actualException.getMessage());
+    }
+
 }
