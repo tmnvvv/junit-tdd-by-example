@@ -41,6 +41,8 @@ public class CheckStorageImpl extends AutoLoggedComponent implements CheckStorag
     public void update(Check updated) {
         if (isExists(updated)) {
             storage.replace(updated.getId(), updated);
+
+            return;
         }
 
         throw new NotFoundException(Check.class, Map.of("id", updated.getId()));
@@ -50,6 +52,8 @@ public class CheckStorageImpl extends AutoLoggedComponent implements CheckStorag
     public void delete(UUID id) {
         if (isExists(id)) {
             storage.remove(id);
+
+            return;
         }
 
         throw new NotFoundException(Check.class, Map.of("id", id));
@@ -59,6 +63,8 @@ public class CheckStorageImpl extends AutoLoggedComponent implements CheckStorag
     public void delete(Check check) {
         if (isExists(check)) {
             storage.remove(check.getId(), check);
+
+            return;
         }
 
         throw new NotFoundException(Check.class, check);
