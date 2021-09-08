@@ -1,7 +1,7 @@
 package ru.ithub.factory.impl;
 
-import ru.ithub.entity.Check;
 import ru.ithub.currency.Currency;
+import ru.ithub.entity.Check;
 import ru.ithub.factory.CheckFactory;
 import ru.ithub.factory.LoggerFactory;
 import ru.ithub.util.logging.AutoLoggedComponent;

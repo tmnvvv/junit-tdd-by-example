@@ -1,10 +1,13 @@
 package ru.ithub.storage;
 
+import ru.ithub.annotation.AutoLoggingType;
 import ru.ithub.entity.Check;
 import ru.ithub.annotation.Parameter;
+import ru.ithub.util.logging.LoggingType;
 
 import java.util.UUID;
 
+@AutoLoggingType(type = LoggingType.ALL)
 public interface CheckStorage {
     void create(@Parameter(name = "creation check") Check check);
 

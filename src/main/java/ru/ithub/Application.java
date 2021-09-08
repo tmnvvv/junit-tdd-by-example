@@ -45,26 +45,22 @@ public class Application {
 
         CHECK_STORAGE.create(check);
 
-        //should throw Not Found Exception
+        //should throw NotFoundException
         Check checkFromStorage = CHECK_STORAGE.getCheck(UUID.randomUUID());
     }
 
-    /*
-     * TODO
-     *  Unchecked call to 'setImplementationClass(Class<IMPLEMENTATION>)' as a member of raw type 'ru.ithub.util.loggining.AutoLoggedComponentBuilder'
-     *  Unchecked call to 'setInterfaceClass(Class<INTERFACE>)' as a member of raw type 'ru.ithub.util.loggining.AutoLoggedComponentBuilder'
-     */
+    @SuppressWarnings("unchecked")
     public static void initAutoLoggedComponents() {
         try {
-            CHECK_FACTORY = (CheckFactory) new AutoLoggedComponentBuilder()
-                .setInterfaceClass(CheckFactory.class)
-                .setImplementationClass(CheckFactoryImpl.class)
-                .build();
+            CHECK_FACTORY = (CheckFactory) AutoLoggedComponentBuilder.newBuilder()
+                    .setInterfaceClass(CheckFactory.class)
+                    .setImplementationClass(CheckFactoryImpl.class)
+                    .build();
 
-            CHECK_STORAGE = (CheckStorage) new AutoLoggedComponentBuilder()
+            CHECK_STORAGE = (CheckStorage) AutoLoggedComponentBuilder.newBuilder()
                     .setInterfaceClass(CheckStorage.class)
                     .setImplementationClass(CheckStorageImpl.class)
-                    .build();
+            .build();
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
