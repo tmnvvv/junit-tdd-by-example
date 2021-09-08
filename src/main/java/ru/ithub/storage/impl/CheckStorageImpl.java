@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-public class CheckStorageImpl extends AutoLoggedComponent implements CheckStorage   {
+public class CheckStorageImpl implements CheckStorage, AutoLoggedComponent {
     private final Logger logger = LoggerFactory.getLogger(CheckStorage.class.getName());
     private final Map<UUID, Check> storage;
 
@@ -24,6 +24,7 @@ public class CheckStorageImpl extends AutoLoggedComponent implements CheckStorag
         this.storage = storage;
     }
 
+    @Override
     public Logger getLogger() {
         return logger;
     }

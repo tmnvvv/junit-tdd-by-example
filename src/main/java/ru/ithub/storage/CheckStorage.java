@@ -1,7 +1,7 @@
 package ru.ithub.storage;
 
 import ru.ithub.entity.Check;
-import ru.ithub.util.logging.Parameter;
+import ru.ithub.annotation.Parameter;
 
 import java.util.UUID;
 

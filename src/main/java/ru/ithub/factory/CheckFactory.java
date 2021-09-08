@@ -1,7 +1,7 @@
 package ru.ithub.factory;
 
 import ru.ithub.entity.Check;
-import ru.ithub.util.logging.Parameter;
+import ru.ithub.annotation.Parameter;
 
 public interface CheckFactory {
     Check dollar(@Parameter(name = "amount of money") double amount);

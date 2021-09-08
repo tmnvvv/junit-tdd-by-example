@@ -5,15 +5,15 @@ import ru.ithub.currency.Currency;
 import ru.ithub.factory.CheckFactory;
 import ru.ithub.factory.LoggerFactory;
 import ru.ithub.util.logging.AutoLoggedComponent;
-import ru.ithub.util.logging.Parameter;
 
 import java.util.logging.Logger;
 
-public class CheckFactoryImpl extends AutoLoggedComponent implements CheckFactory {
+public class CheckFactoryImpl implements CheckFactory, AutoLoggedComponent {
     private final Logger logger = LoggerFactory.getLogger(CheckFactory.class.getName());
 
     public CheckFactoryImpl() { }
 
+    @Override
     public Logger getLogger() {
         return logger;
     }

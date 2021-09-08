@@ -1,4 +1,4 @@
-package ru.ithub.util.logging;
+package ru.ithub.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

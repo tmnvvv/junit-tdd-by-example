@@ -2,21 +2,12 @@ package ru.ithub.util;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.ithub.annotation.ApiModule;
 import ru.ithub.currency.Currency;
 import ru.ithub.currency.CurrencyPair;
 import ru.ithub.exception.ApiRequestException;
 
-import javax.net.ssl.SSLSession;
 import java.io.IOException;
-import java.net.URI;
 import java.net.http.HttpClient;
-import java.net.http.HttpHeaders;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
-import java.util.*;
-import java.util.function.BiPredicate;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
