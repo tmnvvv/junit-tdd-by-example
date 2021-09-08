@@ -8,6 +8,12 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Optional;
 
+/**
+ * Класс заплатки HttpResponse - эмитирует ошибочный ответ при запросе к api
+ *
+ * @see java.net.http.HttpResponse
+ * @see FCCAPIUtil
+ */
 public class ErrorHttpResponse implements HttpResponse {
     @Override
     public int statusCode() {

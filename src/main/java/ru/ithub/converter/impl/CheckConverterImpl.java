@@ -18,6 +18,7 @@ public class CheckConverterImpl implements CheckConverter {
         if (check.getCurrency() == currency) return check;
 
         return Check.newBuilder()
+                .setId(check.getId())
                 .setAmount(check.getAmount() * fccapiUtil.getCurrencyRateOfPair(CurrencyPair.of(check.getCurrency(), currency)))
                 .setCurrency(currency)
                 .build();

@@ -1,4 +1,4 @@
-package ru.ithub.exception;
+package ru.ithub.handler;
 
 import ru.ithub.factory.LoggerFactory;
 
@@ -13,6 +13,8 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
     }
 
     public void uncaughtException(Thread t, Throwable e) {
-        LOGGER.log(Level.SEVERE, e.getMessage());
+        LOGGER.log(Level.WARNING, e.getMessage());
     }
 }
+
+

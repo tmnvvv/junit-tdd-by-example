@@ -1,12 +1,15 @@
-package ru.ithub.converter;
+package ru.ithub.converter.impl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.ithub.converter.CheckConverter;
 import ru.ithub.entity.Check;
 import ru.ithub.converter.impl.CheckConverterImpl;
 import ru.ithub.currency.Currency;
 import ru.ithub.currency.CurrencyPair;
 import ru.ithub.util.FCCAPIUtil;
+
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -14,9 +17,11 @@ import static org.mockito.Mockito.*;
 class CheckConverterTest {
     private CheckConverter checkConverter;
     private FCCAPIUtil fccapiUtil;
+    private UUID testUUID;
 
     @BeforeEach
     void setUp() {
+        testUUID = UUID.randomUUID();
         fccapiUtil = mock(FCCAPIUtil.class);
         checkConverter = new CheckConverterImpl(fccapiUtil);
     }
@@ -24,11 +29,13 @@ class CheckConverterTest {
     @Test
     void convertShouldUseFCCAPIUtilAndConvertAmountByRate() {
         Check check = Check.newBuilder()
+                .setId(testUUID)
                 .setAmount(10)
                 .setCurrency(Currency.USD)
                 .build();
 
         Check expected = Check.newBuilder()
+                .setId(testUUID)
                 .setAmount(700)
                 .setCurrency(Currency.RUB)
                 .build();
