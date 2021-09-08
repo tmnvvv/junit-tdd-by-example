@@ -1,4 +1,4 @@
-package ru.ithub.util;
+package ru.ithub.util.logging;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Formatter;
