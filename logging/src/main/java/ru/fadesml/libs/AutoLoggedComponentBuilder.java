@@ -12,126 +12,111 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AutoLoggedComponentBuilder<INTERFACE, IMPLEMENTATION extends AutoLoggedComponent> {
-    private Class<INTERFACE> interfaceClass;
-    private Class<IMPLEMENTATION> implementationClass;
+public class AutoLoggedComponentBuilder {
+    @SuppressWarnings("unchecked")
+    public static <INTERFACE, IMPLEMENTATION extends AutoLoggedComponent> INTERFACE create(Class<INTERFACE> interfaceClass, Class<IMPLEMENTATION> implementationClass) {
+        return (INTERFACE) Proxy.newProxyInstance(
+                Thread.currentThread().getContextClassLoader(),
+                new Class<?> [] {
+                        interfaceClass
+                },
+                new InvocationHandler() {
+                    IMPLEMENTATION target;
 
-    private AutoLoggedComponentBuilder() {}
-
-    public static <INTERFACE, IMPLEMENTATION extends AutoLoggedComponent> AutoLoggedComponentBuilder.Builder newBuilder() {
-        return new AutoLoggedComponentBuilder<INTERFACE, IMPLEMENTATION>().new Builder();
-    }
-
-    public class Builder {
-        private Builder() {}
-
-        public Builder setInterfaceClass(Class<INTERFACE> interfaceClass) {
-            AutoLoggedComponentBuilder.this.interfaceClass = interfaceClass;
-
-            return this;
-        }
-
-        public Builder setImplementationClass(Class<IMPLEMENTATION> implementationClass) {
-            AutoLoggedComponentBuilder.this.implementationClass = implementationClass;
-
-            return this;
-        }
-
-        public Object build() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-            return  Proxy.newProxyInstance(
-                    Thread.currentThread().getContextClassLoader(),
-                    new Class<?> [] {
-                            AutoLoggedComponentBuilder.this.interfaceClass
-                    },
-                    new InvocationHandler() {
-                        final IMPLEMENTATION target = AutoLoggedComponentBuilder.this.implementationClass.getDeclaredConstructor().newInstance();
-
-                        @Override
-                        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-
-                            try {
-                                Object returnValue = method.invoke(target, args);
-
-                                if (isAutoLoggedComponent(AutoLoggedComponentBuilder.this.implementationClass)) {
-                                    if (AutoLoggedComponentBuilder.this.interfaceClass.getAnnotation(AutoLoggingType.class).type() == LoggingType.MARKED) {
-                                        if (getMethodFromInterface(method).getAnnotation(AutoLogged.class) != null) {
-                                            log(target.getLogger(), method, returnValue);
-                                        }
-                                    } else {
-                                        log(target.getLogger(), method, returnValue);
-                                    }
-                                }
-
-                                return returnValue;
-                            } catch (InvocationTargetException ite) {
-                                throw ite.getCause();
-                            }
+                    {
+                        try {
+                            target = implementationClass.getDeclaredConstructor().newInstance();
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                            e.printStackTrace();
+                            target = null;
                         }
                     }
-            );
-        }
 
-        private void log(Logger logger, Method method, Object returnValue) {
-            if (returnValue != null) {
-                logger.log(Level.INFO, methodToString(method) + " >> " + returnValue);
-            } else {
-                logger.log(Level.INFO, methodToString(method));
-            }
-        }
+                    @Override
+                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
-        private Method getMethodFromInterface(Method invoked) {
-            try {
-                return AutoLoggedComponentBuilder.this.interfaceClass.getMethod(invoked.getName(), invoked.getParameterTypes());
-            } catch (NoSuchMethodException e) {
-                return invoked;
-            }
-        }
+                        try {
+                            Object returnValue = method.invoke(target, args);
 
-        private boolean isAutoLoggedComponent(Class<IMPLEMENTATION> implementationClass) {
-            boolean hasAutoLoggedComponent = false;
-            boolean hasAutoLoggingTypeAnnotationInInterface = AutoLoggedComponentBuilder.this.interfaceClass.getAnnotation(AutoLoggingType.class) != null;
+                            if (isAutoLoggedComponent(interfaceClass, implementationClass)) {
+                                if (interfaceClass.getAnnotation(AutoLoggingType.class).type() == LoggingType.MARKED) {
+                                    if (getMethodFromInterface(method, interfaceClass).getAnnotation(AutoLogged.class) != null) {
+                                        log(target.getLogger(), method, returnValue);
+                                    }
+                                } else {
+                                    log(target.getLogger(), method, returnValue);
+                                }
+                            }
 
-            for (Class<?> implemented : implementationClass.getInterfaces()) {
-                if (implemented.getName().equals(AutoLoggedComponent.class.getName())) {
-                    hasAutoLoggedComponent = true;
-                    break;
+                            return returnValue;
+                        } catch (InvocationTargetException ite) {
+                            throw ite.getCause();
+                        }
+                    }
                 }
-            }
+        );
+    }
 
-            return hasAutoLoggedComponent && hasAutoLoggingTypeAnnotationInInterface;
+    private static void log(Logger logger, Method method, Object returnValue) {
+        if (returnValue != null) {
+            logger.log(Level.INFO, methodToString(method) + " >> " + returnValue);
+        } else {
+            logger.log(Level.INFO, methodToString(method));
+        }
+    }
+
+    private static <INTERFACE> Method getMethodFromInterface(Method invoked, Class<INTERFACE> interfaceClass) {
+        try {
+            return interfaceClass.getMethod(invoked.getName(), invoked.getParameterTypes());
+        } catch (NoSuchMethodException e) {
+            return invoked;
+        }
+    }
+
+    private static <INTERFACE, IMPLEMENTATION> boolean isAutoLoggedComponent(Class<INTERFACE> interfaceClass, Class<IMPLEMENTATION> implementationClass) {
+        boolean hasAutoLoggedComponent = false;
+        boolean hasAutoLoggingTypeAnnotationInInterface = interfaceClass.getAnnotation(AutoLoggingType.class) != null;
+
+        for (Class<?> implemented : implementationClass.getInterfaces()) {
+            if (implemented.getName().equals(AutoLoggedComponent.class.getName())) {
+                hasAutoLoggedComponent = true;
+                break;
+            }
         }
 
-        private String methodToString(Method method) {
-            String result = "";
+        return hasAutoLoggedComponent && hasAutoLoggingTypeAnnotationInInterface;
+    }
 
-            if (method.getAnnotation(MethodInfo.class) != null) {
-                MethodInfo methodInfo = method.getAnnotation(MethodInfo.class);
+    private static String methodToString(Method method) {
+        String result = "";
 
-                result = result.concat(methodInfo.name() + "(");
-                String parameters = "";
+        if (method.getAnnotation(MethodInfo.class) != null) {
+            MethodInfo methodInfo = method.getAnnotation(MethodInfo.class);
 
-                for (int i = 0; i < methodInfo.parameters().length; i++) {
-                    parameters = parameters.concat(methodInfo.parameters()[i] + ", ");
-                }
+            result = result.concat(methodInfo.name() + "(");
+            String parameters = "";
 
-                if(parameters.endsWith(", ")) { parameters = parameters.substring(0, parameters.length() - 2); }
-
-                result =  result.concat(parameters + "), description("+ methodInfo.description()+")");
-
-            } else {
-                result =  result.concat(method.getName() + "(");
-                String parameters = "";
-
-                for (int i = 0; i < method.getParameterTypes().length; i++) {
-                    parameters = parameters.concat(method.getParameterTypes()[i].getSimpleName() + ", ");
-                }
-
-                if(parameters.endsWith(", ")) { parameters = parameters.substring(0, parameters.length() - 2); }
-
-                result = result.concat(parameters + ")");
+            for (int i = 0; i < methodInfo.parameters().length; i++) {
+                parameters = parameters.concat(methodInfo.parameters()[i] + ", ");
             }
 
-            return result;
+            if(parameters.endsWith(", ")) { parameters = parameters.substring(0, parameters.length() - 2); }
+
+            result =  result.concat(parameters + "), description("+ methodInfo.description()+")");
+
+        } else {
+            result =  result.concat(method.getName() + "(");
+            String parameters = "";
+
+            for (int i = 0; i < method.getParameterTypes().length; i++) {
+                parameters = parameters.concat(method.getParameterTypes()[i].getSimpleName() + ", ");
+            }
+
+            if(parameters.endsWith(", ")) { parameters = parameters.substring(0, parameters.length() - 2); }
+
+            result = result.concat(parameters + ")");
         }
+
+        return result;
     }
 }

@@ -1,6 +1,9 @@
 package ru.ithub;
 
 import ru.fadesml.libs.AutoLoggedComponentBuilder;
+import ru.ithub.converter.CheckConverter;
+import ru.ithub.converter.impl.CheckConverterImpl;
+import ru.ithub.currency.Currency;
 import ru.ithub.entity.Check;
 import ru.ithub.factory.CheckFactory;
 import ru.ithub.factory.LoggerFactory;
@@ -10,10 +13,11 @@ import ru.ithub.storage.CheckStorage;
 import ru.ithub.storage.impl.CheckStorageImpl;
 import ru.ithub.util.FCCAPIUtil;
 
-import java.lang.reflect.InvocationTargetException;
 import java.net.http.HttpClient;
 import java.time.Duration;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @SuppressWarnings("ALL")
 public class Application {
@@ -23,18 +27,19 @@ public class Application {
             .connectTimeout(Duration.ofSeconds(10))
             .build();
 
+    public static final Logger GLOBAL_LOGGER = Logger.getGlobal();
+
     public static final FCCAPIUtil FCCAPI_UTIL = new FCCAPIUtil(GLOBAL_HTTP_CLIENT);
 
-    // --Commented out by Inspection (08.09.2021 20:39):public static final CheckConverter CHECK_CONVERTER = new CheckConverterImpl(FCCAPI_UTIL);
+    public static final CheckConverter CHECK_CONVERTER = new CheckConverterImpl(FCCAPI_UTIL);
 
-    public static CheckFactory CHECK_FACTORY = null;
-    public static CheckStorage CHECK_STORAGE = null;
+    public static CheckFactory CHECK_FACTORY = AutoLoggedComponentBuilder.create(CheckFactory.class, CheckFactoryImpl.class);
+    public static CheckStorage CHECK_STORAGE = AutoLoggedComponentBuilder.create(CheckStorage.class, CheckStorageImpl.class);
 
     public static void main(String[] args) {
         //initialization
         LoggerFactory.init();
         ExceptionHandler.init();
-        initAutoLoggedComponents();
 
         Check check = CHECK_FACTORY.euro(100);
 
@@ -44,23 +49,15 @@ public class Application {
 
         CHECK_STORAGE.create(check);
 
-        //should throw NotFoundException
+        CHECK_STORAGE.getCheck(check.getId());
+
+        check = CHECK_CONVERTER.convert(check, Currency.USD);
+
+        CHECK_STORAGE.update(check);
+
+        GLOBAL_LOGGER.log(Level.INFO, check.toString());
+
+        //throws NotFoundException from ExceptionHandler with Level: WARNING
         Check checkFromStorage = CHECK_STORAGE.getCheck(UUID.randomUUID());
-    }
-
-    public static void initAutoLoggedComponents() {
-        try {
-            CHECK_FACTORY = (CheckFactory) AutoLoggedComponentBuilder.newBuilder()
-                    .setInterfaceClass(CheckFactory.class)
-                    .setImplementationClass(CheckFactoryImpl.class)
-                    .build();
-
-            CHECK_STORAGE = (CheckStorage) AutoLoggedComponentBuilder.newBuilder()
-                    .setInterfaceClass(CheckStorage.class)
-                    .setImplementationClass(CheckStorageImpl.class)
-            .build();
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
     }
 }

@@ -5,7 +5,6 @@ import ru.ithub.currency.Currency;
 import java.util.Objects;
 import java.util.UUID;
 
-
 public class Check {
     protected UUID id;
     protected double amount;
@@ -28,6 +27,24 @@ public class Check {
     public UUID getId() {
         return id;
     }
+
+//    public Check setId(UUID id) {
+//        this.id = id;
+//
+//        return this;
+//    }
+//
+//    public Check setAmount(double amount) {
+//        this.amount = amount;
+//
+//        return this;
+//    }
+//
+//    public Check setCurrency(Currency currency) {
+//        this.currency = currency;
+//
+//        return this;
+//    }
 
     @Override
     public boolean equals(Object o) {

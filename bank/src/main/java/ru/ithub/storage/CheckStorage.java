@@ -1,9 +1,12 @@
 package ru.ithub.storage;
 
+import ru.fadesml.libs.LoggingType;
+import ru.fadesml.libs.annotation.AutoLoggingType;
 import ru.ithub.entity.Check;
 
 import java.util.UUID;
 
+@AutoLoggingType(type = LoggingType.ALL)
 public interface CheckStorage {
     void create(Check check);
 
